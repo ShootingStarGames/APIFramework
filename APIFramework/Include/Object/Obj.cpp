@@ -1,8 +1,10 @@
 #include "Obj.h"
 #include "../Scene/Layer.h"
+#include "../Scene/SceneManager.h"
+#include "../Scene/Scene.h"
+#include "../Collider/Collider.h"
 
 list<Obj*> Obj::m_ObjList;
-unordered_map<string, Obj*> Obj::m_mapPrototype;
 
 Obj::Obj()
 {
@@ -11,10 +13,24 @@ Obj::Obj()
 Obj::Obj(const Obj & obj)
 {
 	*this = obj;
+
+	m_ColliderList.clear();
+
+	list<Collider*>::const_iterator iter;
+	list<Collider*>::const_iterator iterEnd = obj.m_ColliderList.end();
+
+	for (iter = obj.m_ColliderList.begin(); iter != iterEnd; ++iter)
+	{
+		Collider* pColl = (*iter)->Clone();
+
+		m_ColliderList.push_back(pColl);
+	}
+
 }
 
 Obj::~Obj()
 {
+	Safe_Release_VecList(m_ColliderList);
 }
 
 void Obj::AddObj(Obj * pObj)
@@ -77,20 +93,6 @@ void Obj::EraseObj()
 	Safe_Release_VecList(m_ObjList);
 }
 
-void Obj::ErasePrototype(const string & strKey)
-{
-	unordered_map<string, Obj*>::iterator iter = m_mapPrototype.find(strKey);
-	if (iter == m_mapPrototype.end())
-		return;
-	SAFE_RELEASE(iter->second);
-	m_mapPrototype.erase(iter);
-}
-
-void Obj::ErasePrototype()
-{
-	Safe_Release_Map(m_mapPrototype);
-}
-
 bool Obj::Init()
 {
 	return false;
@@ -121,7 +123,7 @@ void Obj::Render(HDC hDc, float fDeltaTime)
 Obj * Obj::CreateCloneObj(const string & strPrototypeKey, 
 	const string & strTag, class Layer* pLayer)
 {
-	Obj* pPrototype = FindPrototype(strPrototypeKey);
+	Obj* pPrototype = Scene::FindPrototype(strPrototypeKey);
 
 	if (!pPrototype)
 		return NULL;
@@ -137,13 +139,4 @@ Obj * Obj::CreateCloneObj(const string & strPrototypeKey,
 	AddObj(pObj);
 
 	return pObj;
-}
-
-Obj * Obj::FindPrototype(const string & strKey)
-{
-	unordered_map<string, Obj*>::iterator iter = m_mapPrototype.find(strKey);
-	if (iter == m_mapPrototype.end())
-		return NULL;
-	
-	return iter->second;
 }

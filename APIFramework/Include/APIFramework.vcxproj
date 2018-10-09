@@ -146,10 +146,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Collider\Collider.cpp" />
+    <ClCompile Include="Collider\CollisionManager.cpp" />
     <ClCompile Include="Core\Core.cpp" />
+    <ClCompile Include="Core\PathManager.cpp" />
     <ClCompile Include="Core\Ref.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Obj.cpp" />
+    <ClCompile Include="Resources\ResourcesManager.cpp" />
+    <ClCompile Include="Resources\Texture.cpp" />
     <ClCompile Include="Scene\InGameScene.cpp" />
     <ClCompile Include="Scene\Layer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -157,12 +162,17 @@
     <ClCompile Include="Core\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Collider\Collider.h" />
+    <ClInclude Include="Collider\CollisionManager.h" />
     <ClInclude Include="Core\Core.h" />
+    <ClInclude Include="Core\PathManager.h" />
     <ClInclude Include="Core\Ref.h" />
     <ClInclude Include="Core\Timer.h" />
     <ClInclude Include="Flag.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Object\Obj.h" />
+    <ClInclude Include="Resources\ResourcesManager.h" />
+    <ClInclude Include="Resources\Texture.h" />
     <ClInclude Include="Scene\Layer.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="resource.h" />

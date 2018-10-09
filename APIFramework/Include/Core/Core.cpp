@@ -1,12 +1,15 @@
 #include "Core.h"
 #include "Timer.h"
+#include "PathManager.h"
+#include "../Resources/ResourcesManager.h"
 #include "../Scene/SceneManager.h"
+#include "../Collider/CollisionManager.h"
 
 DEFINITION_SINGLE(Core);
 bool Core::m_bLoop = true;
 Core::Core() 
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc();
 }
 
@@ -14,7 +17,12 @@ Core::Core()
 Core::~Core()
 {
 	DESTROY_SINGLE(Timer);
+	DESTROY_SINGLE(PathManager);
 	DESTROY_SINGLE(SceneManager);
+	DESTROY_SINGLE(ResourcesManager);
+	DESTROY_SINGLE(CollisionManager);
+
+	ReleaseDC(m_hWnd, m_hDc);
 }
 
 bool Core::Init(HINSTANCE hInst)
@@ -33,10 +41,14 @@ bool Core::Init(HINSTANCE hInst)
 	if (!GET_SINGLE(Timer)->Init())
 		return false;
 
+	if (!GET_SINGLE(PathManager)->Init())
+		return false;
 	//Scene
 	if (!GET_SINGLE(SceneManager)->Init())
 		return false;
-	
+
+	if (!GET_SINGLE(ResourcesManager)->Init(hInst))
+		return false;
 	return true;
 }
 

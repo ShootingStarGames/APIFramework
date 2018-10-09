@@ -18,7 +18,7 @@ bool SceneManager::Init()
 {
 	CreateScene<InGameScene>(SC_CURRENT);
 
-	return false;
+	return true;
 }
 
 void SceneManager::Input(float fDeltaTime)

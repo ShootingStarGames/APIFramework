@@ -6,13 +6,14 @@ class Obj :
 	public Ref
 {
 protected:
+	friend class Scene;
+protected:
 	Obj();
 	Obj(const Obj& obj);
 	virtual ~Obj();
 
 private:
 	static list<Obj*> m_ObjList;
-	static unordered_map<string, Obj*> m_mapPrototype;
 
 public:
 	static void AddObj(Obj* pObj);
@@ -20,14 +21,12 @@ public:
 	static void EraseObj(Obj* pObj);
 	static void EraseObj(const string& strTag);
 	static void EraseObj();
-	static void ErasePrototype(const string& strKey);
-	static void ErasePrototype();
 protected:
 	string		m_strTag;
 	POSITION	m_tPos;
 	_SIZE		m_tSize;
 	POSITION	m_tPivot;
-
+	list<class Collider*> m_ColliderList;
 protected:
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
@@ -98,6 +97,28 @@ public:
 
 public:
 	template <typename T>
+	T* AddCollider(const string& strTag)
+	{
+		T* pCollider = new T;
+
+		pCollider->SetObj(this);
+
+		if (!pCollider->Init())
+		{
+			SAFE_RELEASE(pCollider);
+			return NULL;
+		}
+		pCollider->AddRef();
+		m_ColliderList.push_back(pCollider);
+
+		return pCollider;
+	}
+
+	bool CheckCollider()
+	{
+		return !m_ColliderList.empty();
+	}
+	template <typename T>
 	static  T* CreateObj(const string& strTag, class Layer* pLayer = NULL)
 	{
 		T* pObj = new T;
@@ -120,25 +141,6 @@ public:
 	}
 	static  Obj* CreateCloneObj(const string& strPrototypeKey,
 		const string& strTag, class Layer* pLayer);
-	template <typename T>
-	static  T* CreatePrototype(const string& strTag)
-	{
-		T* pObj = new T;
 
-		pObj->SetTag(strTag);
-		if (!pObj->Init())
-		{
-			SAFE_RELEASE(pObj);
-			return NULL;
-		}
-		pObj->AddRef();
-
-		m_mapPrototype.insert(make_pair(strTag, pObj));
-
-		return pObj;
-	}
-
-private:
-	static Obj* FindPrototype(const string& strKey);
 };
 

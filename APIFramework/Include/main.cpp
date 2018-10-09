@@ -1,4 +1,3 @@
-
 #include "Core/Core.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
